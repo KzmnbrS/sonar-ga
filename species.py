@@ -18,7 +18,7 @@ class Specie:
     @classmethod
     def poor(cls, length: int):
         """Generates a poor specie with '1' * `length` genotype."""
-        return cls([1 for _ in range(length)])
+        return cls([1] * length)
 
     def clone(self) -> Specie:
         return Specie(list(self.genotype))
@@ -29,7 +29,7 @@ class Specie:
         You can update in manually by calling `update_cached_fitness`."""
         return self._fitness
 
-    def compute_fitness(self) -> float:
+    def correlation(self) -> List[int]:
         correlation = []
         for i, value in enumerate(reversed(self.genotype)):
             cut = len(self.genotype) - (i + 1)
@@ -39,7 +39,10 @@ class Specie:
             for j in range(len(shift)):
                 accum += self.genotype[j] * shift[j]
             correlation.append(accum)
+        return correlation
 
+    def compute_fitness(self) -> float:
+        correlation = self.correlation()
         peak = correlation[-1]
         max_petal = max(map(abs, correlation[:-1]))
         return peak / max_petal
@@ -74,8 +77,8 @@ def recombine(alice: Specie, bob: Specie) -> (Specie, Specie):
     return dan, carol
 
 
-def evolve(population: List[Specie], count: int) -> List[Specie]:
-    """Evolves the `population` leaving the `count` species.
+def evaluate(population: List[Specie], count: int) -> List[Specie]:
+    """Evaluates the `population` leaving the `count` species.
     Probability roulette is used as a selection method."""
     nextgen = []
     for _ in range(count):
