@@ -63,7 +63,7 @@ def conclude(signum, frame):
 signal(SIGINT, conclude)
 
 
-def examine(population: List[Specie]) -> (int, int, Specie):
+def examine(population: List[Specie]) -> (int, Specie):
     gen_num, best = len(solutions), best_in(population)
     solutions.append((len(solutions), best, population[best]))
     average_fitness.append(compute_average_fitness(population))
